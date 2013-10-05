@@ -1,19 +1,12 @@
 package rareores.common;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockDispenser;
-import net.minecraft.block.BlockFlower;
-import net.minecraft.block.StepSound;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.EnumArmorMaterial;
-import net.minecraft.item.EnumToolMaterial;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSourceIndirect;
-import net.minecraftforge.common.EnumHelper;
-import net.minecraftforge.common.MinecraftForge;
+import rareores.common.block.Blocks;
+import rareores.common.config.RareoresConfigIds;
+import rareores.common.config.RareoresConfigNames;
+import rareores.common.element.WorldGeneratorRareores;
+import rareores.common.item.Items;
+import rareores.common.recipe.RareoresRecipes;
+import rareores.common.recipe.RareoresSmelting;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -21,38 +14,48 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid="rareores",name="rareores",version="1.6.2")
+@Mod(modid=Rareores.modid,name="Rareores",version="1.7")
 @NetworkMod(clientSideRequired=true,serverSideRequired = false)
 
 
 public class Rareores {
 	
-	 @Instance("rareores")
-	 public static Rareores instance;
+	public static final String modid = "rareores";
+	 
+	@Instance(modid)
+	public static Rareores mod;
+	public static Items items;
+	public static Blocks blocks;
+	public static RareoresConfigIds ID;
+	public static RareoresConfigNames Names;
+	public static RareoresRecipes Recipes;
+	public static RareoresSmelting Smelting;
+	
+	
 	 
 	 @SidedProxy(clientSide="rareores.client.ClientProxyRareores", serverSide="rareores.common.CommonProxyRareores")
      public static CommonProxyRareores proxy;
 	
 	
-	
 	@EventHandler
-	 public void preInit(FMLPreInitializationEvent eventConfig) {
-       
-	
-    		
-    		
+	 public void preInit(FMLPreInitializationEvent event)
+	{
+       ID.doConfig(event);
+       Names.doConfig(event);
+       items.initializeItems();
+       blocks.initializeBlocks();
+       Recipes.initializerecipes();
+       Smelting.initializeSmelting();
 	}
 
-	//Declaring init
 	@EventHandler
-	public void Init(FMLInitializationEvent event){
+	public void Init(FMLInitializationEvent event)
+	{
 	
-	
+		proxy.registerproxy();
+		GameRegistry.registerWorldGenerator(new WorldGeneratorRareores());
 	}
 	
 }
